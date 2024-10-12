@@ -1,0 +1,50 @@
+class String {
+    // Friend functions allow these operators to access private members of the String class.
+    // These functions provide functionality such as input/output, comparison, concatenation, etc.
+
+    friend std::ostream &operator<<(std::ostream &os, const String &rhs); // Overloads << for printing.
+    friend std::istream &operator>>(std::istream &in, String &rhs);       // Overloads >> for input.
+    friend String operator+(const String &s1, const String &s2);          // Concatenates two strings.
+    friend String operator-(const String &s1);                            // Converts string to lowercase.
+    friend bool operator==(const String &c1, const String &c2);           // Checks equality of two strings.
+    friend bool operator!=(const String &c1, const String &c2);           // Checks inequality of two strings.
+    friend bool operator>(const String &c1, const String &c2);            // Checks if one string is greater.
+    friend bool operator<(const String &c1, const String &c2);            // Checks if one string is smaller.
+    friend String operator*(const String &s1, const size_t &n);           // Repeats the string 'n' times.
+    friend String &operator+=(String &lhs, const String &rhs);            // Appends rhs to lhs.
+    friend String &operator++(String &s1);                                // Converts string to uppercase (prefix).
+    friend String &operator++(String &s1, int);                           // Converts string to uppercase (postfix).
+
+private:
+    // Pointer to a character array, used to store the string data.
+    // It dynamically allocates memory based on the string size.
+    char *str{nullptr};
+
+public:
+    // Default constructor: Initializes the string to an empty string ("").
+    String();
+
+    // Constructor that takes a C-style string (const char*) and copies it into the object.
+    String(const char *s);
+
+    // Copy constructor: Creates a deep copy of the given String object.
+    String(const String &s);
+
+    // Move constructor: Transfers ownership of the resource from the given String object.
+    // After the transfer, the source object's pointer is set to nullptr.
+    String(String &&s);
+
+    // Destructor: Frees the memory allocated for the string to prevent memory leaks.
+    ~String();
+
+    // Copy assignment operator: Creates a deep copy of the given String object.
+    // It handles self-assignment by checking if the objects are the same.
+    String &operator=(const String &s);
+
+    // Move assignment operator: Transfers ownership of the resource from the given String object.
+    // It handles self-assignment by checking if the objects are the same.
+    String &operator=(String &&s);
+
+    // Prints the string to the console using std::cout.
+    void print_string();
+};
