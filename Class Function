@@ -1,0 +1,141 @@
+// Default Constructor: Initializes the string with an empty string.
+String::String() {
+    str = new char[1];  // Allocate space for '\0'
+    *str = '\0';        // Set the string to be empty
+}
+
+// Parameterized Constructor: Creates a new string from a C-string.
+String::String(const char *s) {
+    str = new char[std::strlen(s) + 1];  // Allocate memory for the string
+    std::strcpy(str, s);                 // Copy the content of 's' to 'str'
+}
+
+// Copy Constructor: Performs a deep copy of the given String object.
+String::String(const String &s) {
+    str = new char[std::strlen(s.str) + 1];  // Allocate memory for the new string
+    std::strcpy(str, s.str);                 // Copy the content from 's'
+}
+
+// Move Constructor: Transfers ownership of the resource to this object.
+String::String(String &&s) {
+    str = s.str;     // Transfer the resource
+    s.str = nullptr; // Nullify the source pointer to avoid double deletion
+}
+
+// Destructor: Releases allocated memory.
+String::~String() {
+    delete[] str;  // Free the allocated memory
+}
+
+// Copy Assignment Operator: Handles deep copy and self-assignment.
+String &String::operator=(const String &s) {
+    if (this == &s) return *this;  // Check for self-assignment
+    delete[] str;  // Release the current memory
+    str = new char[std::strlen(s.str) + 1];  // Allocate new memory
+    std::strcpy(str, s.str);  // Copy the content from 's'
+    return *this;
+}
+
+// Move Assignment Operator: Transfers ownership and handles self-assignment.
+String &String::operator=(String &&s) {
+    if (this == &s) return *this;  // Check for self-assignment
+    delete[] str;  // Release current memory
+    str = s.str;   // Transfer the resource
+    s.str = nullptr; // Nullify the source pointer
+    return *this;
+}
+
+// Prints the string to the console.
+void String::print_string() {
+    std::cout << str << std::endl;
+}
+
+// Concatenation Operator: Returns a new String object by joining two strings.
+String operator+(const String &s1, const String &s2) {
+    char *buff = new char[std::strlen(s1.str) + std::strlen(s2.str) + 1];  // Allocate memory
+    std::strcpy(buff, s1.str);  // Copy the first string
+    std::strcat(buff, s2.str);  // Append the second string
+    String temp{buff};  // Create a temporary String object
+    delete[] buff;  // Release the buffer
+    return temp;
+}
+
+// Unary Minus Operator: Converts all characters to lowercase.
+String operator-(const String &s1) {
+    char *buff = new char[std::strlen(s1.str) + 1];  // Allocate memory
+    for (size_t i = 0; i < std::strlen(s1.str); ++i) {
+        buff[i] = std::tolower(s1.str[i]);  // Convert to lowercase
+    }
+    buff[std::strlen(s1.str)] = '\0';  // Add null terminator
+    String temp(buff);  // Create a temporary String object
+    delete[] buff;  // Release the buffer
+    return temp;
+}
+
+// Equality Operator: Compares if two strings are equal.
+bool operator==(const String &c1, const String &c2) {
+    return std::strcmp(c1.str, c2.str) == 0;  // Compare strings
+}
+
+// Inequality Operator: Compares if two strings are not equal.
+bool operator!=(const String &c1, const String &c2) {
+    return std::strcmp(c1.str, c2.str) != 0;  // Compare strings
+}
+
+// Greater Than Operator: Checks if one string is lexicographically greater.
+bool operator>(const String &c1, const String &c2) {
+    return std::strcmp(c1.str, c2.str) > 0;  // Compare strings
+}
+
+// Less Than Operator: Checks if one string is lexicographically smaller.
+bool operator<(const String &c1, const String &c2) {
+    return std::strcmp(c1.str, c2.str) < 0;  // Compare strings
+}
+
+// Multiplication Operator: Repeats the string 'n' times.
+String operator*(const String &s1, const size_t &n) {
+    char *buff = new char[std::strlen(s1.str) * n + 1];  // Allocate memory
+    std::strcpy(buff, s1.str);  // Copy the first instance
+    for (size_t i = 1; i < n; ++i) {
+        std::strcat(buff, s1.str);  // Append the string repeatedly
+    }
+    String temp{buff};  // Create a temporary String object
+    delete[] buff;  // Release the buffer
+    return temp;
+}
+
+// Compound Addition Operator: Appends 'rhs' to 'lhs'.
+String &operator+=(String &lhs, const String &rhs) {
+    lhs = lhs + rhs;  // Use the + operator to append
+    return lhs;
+}
+
+// Prefix Increment Operator: Converts all characters to uppercase.
+String &operator++(String &s1) {
+    for (size_t i = 0; i < std::strlen(s1.str); ++i) {
+        s1.str[i] = std::toupper(s1.str[i]);  // Convert to uppercase
+    }
+    return s1;
+}
+
+// Postfix Increment Operator: Converts characters to uppercase, returns the original value.
+String &operator++(String &s1, int) {
+    String temp{s1};  // Create a copy of the original object
+    ++s1;  // Call the prefix increment operator
+    return temp;  // Return the original object
+}
+
+// Output Stream Operator: Prints the string to the output stream.
+std::ostream &operator<<(std::ostream &os, const String &rhs) {
+    os << rhs.str;  // Output the string
+    return os;
+}
+
+// Input Stream Operator: Reads a string from the input stream.
+std::istream &operator>>(std::istream &in, String &rhs) {
+    char *buff = new char[1000];  // Allocate buffer
+    in >> buff;  // Read input into buffer
+    rhs = String(buff);  // Assign the buffer to 'rhs'
+    delete[] buff;  // Release the buffer
+    return in;
+}
